@@ -24,84 +24,24 @@
   			if(msg.charAt(0) == "$"){
           var words= msg.split(' ');
           var command = words[0].substring(1, words[0].length).toLowerCase();
-          if(command == 'pwd'){
-            $('#messages').append($('<li class="usr">').text('Password: ******'));
-          } else {
           $('#messages').append($('<li class="usr">').text(msg));
-          }
-  			socket.emit('command', msg);
-  			$('#m').val('');
-  			return false;
-  			} else {
-    		socket.emit('chat message', $('#m').val());
-    		$('#m').val('');
-    		return false;
+      		socket.emit('command', msg);
+  			  $('#m').val('');
+  			  return false;
+  			} 
+        else {
+    		  socket.emit('chat message', $('#m').val());
+    		  $('#m').val('');
+    		  return false;
     		}
+        
         $("html, body").animate({ scrollTop: $(document).height() }, 1000);
 
   		});
-
-
-  		socket.on('chat message', function(msg){
-    		$('#messages').append($('<li class="usr">').text(msg));
-  		});
-
-  		socket.on('user join', function(msg){
-  			$('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
-  		});
-
-  		socket.on('name', function(result){
-  			var msg;
-  			if(result.success){
-  				msg = 'Your name is '+ result.name;
-  			} else {
-  				msg = 'Unable to register your name! '+ result.message
-  			}
-  			$('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
-  		});
-
-      socket.on('namechange', function(result){
-        var msg;
-        if(result.success){
-          msg = 'User '+result.old+ ' has been changed to '+result.new;
-        } else {
-          msg = 'User '+result.old+ ' can not be changed to '+result.new;
-        }
-        $('#messages').append($('<li>').html('<i>'+msg+'</i>'));
-      });
 
       socket.on('botmsg', function(msg){
         $('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
-      });
-
-      socket.on('askpwd', function(result){
-        var msg;
-        if(result.success){
-          msg = 'Please enter the password for user '+ result.user;
-        } else {
-          msg = 'User:' + result.user +' can not be validated! Please contact admin for the issue.';
-        }
-        $('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
         $("html, body").animate({ scrollTop: $(document).height() }, 1000);
-
-      });
-
-      socket.on('slogin', function(msg){
-        $('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
-        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
-
-      });
-
-      socket.on('flogin', function(msg){
-        $('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
-        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
-
-      });
-
-      socket.on('sreg', function(msg){
-        $('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
-        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
-
       });
 
       socket.on('search_results', function(msg){
