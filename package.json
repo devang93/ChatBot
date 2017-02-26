@@ -1,0 +1,12 @@
+{
+  "name": "chatbot",
+  "version": "0.0.1",
+  "description": "bot",
+  "dependencies": {
+    "express": "^4.10.2",
+    "mime": "~1.2.7",
+    "python": "0.0.4",
+    "python-shell": "^0.4.0",
+    "socket.io": "^1.7.2"
+  }
+}

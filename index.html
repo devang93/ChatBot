@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang='en'>
+
+<head>
+	<title>ChatBot</title>
+  <link rel='stylesheet' href='style.css'></link>
+	
+</head>
+
+<body>
+<ul id="messages"></ul>
+<form action="">
+	<input id="m" autocomplete="off" /><button>Send</button>
+</form>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+
+  		var socket = io();
+
+  		$('form').submit(function(){
+  			var msg= $('#m').val();
+  			if(msg.charAt(0) == "$"){
+          var words= msg.split(' ');
+          var command = words[0].substring(1, words[0].length).toLowerCase();
+          if(command == 'pwd'){
+            $('#messages').append($('<li class="usr">').text('Password: ******'));
+          } else {
+          $('#messages').append($('<li class="usr">').text(msg));
+          }
+  			socket.emit('command', msg);
+  			$('#m').val('');
+  			return false;
+  			} else {
+    		socket.emit('chat message', $('#m').val());
+    		$('#m').val('');
+    		return false;
+    		}
+        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+
+  		});
+
+
+  		socket.on('chat message', function(msg){
+    		$('#messages').append($('<li class="usr">').text(msg));
+  		});
+
+  		socket.on('user join', function(msg){
+  			$('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
+  		});
+
+  		socket.on('name', function(result){
+  			var msg;
+  			if(result.success){
+  				msg = 'Your name is '+ result.name;
+  			} else {
+  				msg = 'Unable to register your name! '+ result.message
+  			}
+  			$('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
+  		});
+
+      socket.on('namechange', function(result){
+        var msg;
+        if(result.success){
+          msg = 'User '+result.old+ ' has been changed to '+result.new;
+        } else {
+          msg = 'User '+result.old+ ' can not be changed to '+result.new;
+        }
+        $('#messages').append($('<li>').html('<i>'+msg+'</i>'));
+      });
+
+      socket.on('botmsg', function(msg){
+        $('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
+      });
+
+      socket.on('askpwd', function(result){
+        var msg;
+        if(result.success){
+          msg = 'Please enter the password for user '+ result.user;
+        } else {
+          msg = 'User:' + result.user +' can not be validated! Please contact admin for the issue.';
+        }
+        $('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
+        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+
+      });
+
+      socket.on('slogin', function(msg){
+        $('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
+        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+
+      });
+
+      socket.on('flogin', function(msg){
+        $('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
+        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+
+      });
+
+      socket.on('sreg', function(msg){
+        $('#messages').append($('<li>').html('<i>' +msg+ '</i>'));
+        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+
+      });
+
+      socket.on('search_results', function(msg){
+
+        var htmlText = '';
+    
+            for ( var result in msg ) {
+                var data = JSON.parse(msg[result])
+                htmlText += '<div class="div-conatiner">';
+                htmlText += '<p> <i> Title : ' + data.title + '</i> </p>';
+                htmlText += '<p> <i> Uploaded : ' + data.meta_info_age + '</i></p>';
+                htmlText += '<p> <i> Views : ' + data.meta_info_views + '</i></p>';
+                htmlText += '<p> <i> PublishedBy : ' + data.publishedBy + '</i></p>';
+                htmlText += '<p> <i> Duration : ' + data.duration + ' </i></p>';
+                htmlText += '</br>'
+                htmlText += '</div>';
+            }
+        $('#messages').append(htmlText)
+        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+
+      });
+
+	</script>
+
+</body>
+</html>
